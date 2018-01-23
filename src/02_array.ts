@@ -164,7 +164,18 @@ export function dropWhile<T>(collection: Array<T>, predicate: DropWhilePredicate
  * _.dropRightWhile([5, 4, 3, 2, 1], value => value < 3) => [5, 4, 3]
  *
  */
-export function dropRightWhile() {
+export function dropRightWhile<T>(collection: Array<T>, predicate: DropWhilePredicate<T>): Array<T> {
+  let ret_arr: Array<T> = [];
+
+  for (let i = 0; i < collection.length; i++) {
+    if (!predicate(collection[i])) {
+      ret_arr.push(collection[i]);
+    } else {
+      break;
+    }
+  }
+
+  return ret_arr;
 }
 
 /**
@@ -175,11 +186,23 @@ export function dropRightWhile() {
  * ## Examples
  * _.fill<any>([4, 6, 8, 10], "* ", 1, 3) => [4, "* ", "* ", 10]
  */
-export function fill() {
+export function fill<T> (arr: Array<any>, filler, start: number = 0, end?: number) {
+  if (end == null) {
+    end === arr.length - 1;
+  }
+
+  for (let x = 0; x < end; x++) {
+    if (x >= start && x <= end) {
+      arr[x] = filler;
+    }
+  }
+
+  return arr;
 }
 
 // Here we define an interface for the predicate used in the findIndex function.
 export interface FindIndexPredicate {
+  (value): any;
 }
 
 /**
@@ -195,7 +218,14 @@ export interface FindIndexPredicate {
  * _.findIndex([4, 6, 6, 8, 10], value => value === 6, 2) => 2
  *
  */
-export function findIndex() {
+export function findIndex(arr: Array<any>, predicate: FindIndexPredicate, start: number = 0): number {
+  for (let i = start; i < arr.length; i++) {
+    if (predicate(arr[i])) {
+      return i;
+    } 
+  }
+
+  return -1;
 }
 
 /**
@@ -210,7 +240,18 @@ export function findIndex() {
  * _.findLastIndex([4, 6, 6, 8, 10], value => value === 6, 1) => 1
  *
  */
-export function findLastIndex() {
+export function findLastIndex (arr: Array<any>, predicate: FindIndexPredicate, start?: number): number {
+  if (!start) {
+    start = arr.length - 1;
+  }
+
+  for (let i = start; i >= 0; i--) {
+    if (predicate(arr[i])) {
+      return i;
+    } 
+  }
+
+  return -1;
 }
 
 /**
@@ -224,7 +265,8 @@ export function findLastIndex() {
  * _.nth<number>([1, 2, 3]) => 1
  *
  */
-export function nth() {
+export function nth<T> (arr: Array<T>, index: number = 0) {
+  return arr[index];
 }
 
 /**
@@ -234,5 +276,17 @@ export function nth() {
  * // We can also use something called "union types" here.
  * _.zip<string | number | boolean>(["a", "b"], [1, 2], [true, false]) => [["a", 1, true], ["b", 2, false]]
  */
-export function zip() {
+export function zip<T> () {
+  let ret_arr = [];
+  let num = arguments[0].length - 1;
+
+  for (let i = 0; i <= num; i++) {
+    ret_arr[i] = [];
+
+    for (let x = 0; x < arguments.length; x++) {
+      ret_arr[i].push(arguments[x][i]);
+    }
+  }
+
+  return ret_arr;
 }

@@ -53,9 +53,9 @@ export function attempt(func, ...args) {
 
 // ### constant
 // constant returns a function that returns a the passed in value.
-export function constant(value) {
-  return function() {
-    return value;
+export function constant<T> (value) {
+  return function <T>(): T {
+    return <T>value;
   }
 }
 
@@ -67,12 +67,13 @@ export function noop(...rest) {}
 // ### times
 // times invokes the passed in iteratee (2nd argument) n times. It returns an
 // array of results.
-// interface Any<T> {
-//   fill(value: T): Array<T>;
-// }
+interface Array<T> {
+  fill(value: T): Array<T>;
+}
 
-export function times<Number>(n, iteratee): Number {
+export function times<T>(n: number, iteratee): Array<T> {
   // If the fill function doesn't exist then implement it...
 
-  return Array(n).fill().map((o, i) => iteratee(i));
+  return Array(n).fill(n).map((o, i) => iteratee(i));
 }
+
