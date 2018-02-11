@@ -15,11 +15,15 @@ export interface Dictionary<T> {
 }
 
 interface ArrayForEachIteratee<T> {
-  (value?: T, index?: number, collection?: Array<T>): any;
+  (value?: T, 
+    index?: number, 
+    collection?: Array<T>): any;
 }
 
 interface DictionaryForEachIteratee<T> {
-  (value?: T, key?: string, collection?: Dictionary<T>): any;
+  (value?: T, 
+    key?: string, 
+    collection?: Dictionary<T>): any;
 }
 
 /**
@@ -32,20 +36,37 @@ interface DictionaryForEachIteratee<T> {
  *  let result = [];
  *  let iteratee = (value, index, collection) => result[index] = [index, value];
  *
- *  _.forEach(collection, iteratee); => result === [[0, 'first'], [1, 'second'], [2, 'thidrd']];
+ *  _.forEach(collection, iteratee); => result === [[0, 'first'], [1, 'second'], [2, 'third']];
  *
  *  collection = {
- *    "0": "first",
+ *    "0": "first",z
  *    "1": "second",
  *    "2": "third"
  *  };
  *  result = [];
  *  iteratee = (value, index, collection) => result[index] = [index, value];
  *
- *  _.forEach(collection, iteratee); => result === [['0', 'first'], ['1', 'second'], ['2', 'thidrd']];
+ *  _.forEach(collection, iteratee); => result === [['0', 'first'], ['1', 'second'], ['2', 'third']];
  *
  */
-export function forEach() {
+export function forEach(collection: Array<any> | Object, iteratee: Function) {
+  let result = [];
+
+  if (Array.isArray(collection)) {
+    for (let i of collection) {
+      result.push(collection.indexOf(i), i);
+
+      iteratee(i, collection.indexOf(i), collection) as ArrayForEachIteratee<string>
+    }
+  } else {
+    for (let i in collection) {
+      result.push(i, collection[i]);
+
+      iteratee(collection[i], i, collection) as DictionaryForEachIteratee<string>;
+    }
+  }
+
+  return result;
 }
 
 interface EveryIteratee<T> {
@@ -64,7 +85,24 @@ interface EveryIteratee<T> {
  *  _.every([true, 1, null, 'yes'], Boolean); => false
  *  _.every([null, null, null], (value, index, collection) => value === null); => true
  */
-export function every() {
+export function every<T>(collection: Array<any> | Dictionary<T>, iteratee: Function): boolean {
+  if (Array.isArray(collection)) {
+    for (let i of collection) {
+      if (!(iteratee(i, collection.indexOf(i), collection) as EveryIteratee<T>)) {
+        return false;
+      }
+    }
+
+    return true;
+  } else {
+    for (let i in collection) {
+      if (!(iteratee(collection[i], i, collection) as EveryIteratee<T>)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 }
 
 /**
@@ -88,7 +126,28 @@ export function every() {
  *  _.filter<number>(collection, iteratee) => { 'a': 1, 'c': 3 }
  *
  */
-export function filter() {
+export function filter<T>(collection: Array<any> | Dictionary<T>, iteratee: Function): Array<T> {
+  let result = null;
+
+  if (Array.isArray(collection)) {
+    result = [];
+
+    for (let i of collection) {
+      if (iteratee(i, collection.indexOf(i), collection) as EveryIteratee<T>) {
+        result.push(i);
+      }
+    }
+  } else {
+    result = {};
+
+    for (let i in collection) {
+      if (iteratee(collection[i], i, collection) as EveryIteratee<T>) {
+        result[i] = collection[i];
+      }
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -110,7 +169,20 @@ export function filter() {
  *
  *  _.map<number>(collection, iteratee) => [[1,'a'], [2, 'b']]
  */
-export function map() {
+export function map(collection: Array<any> | Dictionary<any>, iteratee: Function): Array<any> {
+  let result = [];
+
+  if (Array.isArray(collection)) {
+    for (let i of collection) {
+        result.push(iteratee(i));
+    }
+  } else {
+    for (let i in collection) {
+      result.push(iteratee(collection[i], i));
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -133,5 +205,18 @@ export function map() {
  *    }, {}); => { '1': ['a', 'c'], '2': ['b'] }
  *
  */
-export function reduce() {
+export function reduce(collection: Array<any> | Dictionary<any>, add: Function, seed: any): Array<any> {
+  let tally = seed;
+
+  if (Array.isArray(collection)) {
+    for (let i of collection) {
+      tally = add(tally, i);
+    }
+  } else {
+    for (let i in collection) {
+      tally = add(tally, collection[i], i);
+    }
+  }
+
+  return tally;
 }
