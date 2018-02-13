@@ -178,7 +178,7 @@ class QueueItem<T> implements IQueueItem<T> {
 
   toArray (): Array<T> {
     // The time complexity of this isn't great. We could use generators for
-    // this.
+    // this.  
     return [this.value, ...this.next.toArray()];
   }
 }

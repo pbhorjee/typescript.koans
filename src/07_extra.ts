@@ -8,12 +8,23 @@
 
 // ### join
 // Converts all elements in array into a string separated by separator.
-export function join() {
+export function join(arr: Array<string>, concater:string = ","): string {
+    let ret:string = "";
+
+    arr.forEach((element, index) => {
+        ret += element;
+
+        if (index != arr.length-1) {
+            ret += concater
+        }
+    });
+
+    return ret;
 }
 
 // ### ary
 // ary creates a new function. The returned function invokes func - first
 // argument - with n - second argument - arguments, discarding any superfluous
 // arguments.
-export function ary() {
+export function ary(func: Function, arg:any):  {
 }

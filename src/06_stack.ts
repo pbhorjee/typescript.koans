@@ -32,7 +32,7 @@ export class Stack <T> implements IStack<T> {
     return this._size;
   }
 
-  push (value: T):void {
+  push = (value: T) : void => {
     let frame = new StackFrame<T>(value);
 
     frame.next = this.tail;
@@ -41,7 +41,7 @@ export class Stack <T> implements IStack<T> {
     this._size++;
   }
 
-  pop ():T {
+  pop = () : T => {
     let ret:T = this.tail.value;
     this.tail = this.tail.next;
 
@@ -52,11 +52,11 @@ export class Stack <T> implements IStack<T> {
     return ret;
   }
 
-  peek ():T {
+  peek = () : T => {
     return this.tail.value;
   }
 
-  toArray(): Array<T> {
+  toArray = () : Array<T> => {
     return this.tail.toArray();
   } 
 }
@@ -76,17 +76,16 @@ class StackFrame <T> implements IStackFrame <T> {
 
   public next: StackFrame<T> ;
 
-  toArray(): Array<T> {
+  toArray= () : Array<T> => {
     return [this.value, ...this.next.toArray()];
   } 
 }
 
 class LastStackFrame <T> implements IStackFrame <T> {
   public value:T = null;
-
   public next: LastStackFrame<T> = this;
 
-  toArray(): Array<T> {
+  toArray = () : Array<T> => {
     return [];
   } 
 }

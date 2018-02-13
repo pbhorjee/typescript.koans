@@ -8,7 +8,6 @@ describe("06_stack", function () {
       stack.push(0);
       stack.push(1);
       stack.push(2);
-console.log(stack.toArray());
 
       expect(stack.toArray()).to.deep.equal([2, 1, 0]);
     });
